@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎉 Happy Birthday!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Sacramento&display=swap" rel="stylesheet">
+  <style>
+    :root{ --accent:#f472b6; --accent2:#60a5fa; --glow:#fde68a; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 0;
+    }
+    .center-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .highlight-name {
+      font-family: 'Sacramento', cursive;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent2), 0 0 20px var(--glow);
+    }
+    .countdown {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .surprise-popup{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .4s ease;}
+    .surprise-popup.show{opacity:1;pointer-events:auto;}
+    .surprise-content{background:#1e293b;padding:20px;border-radius:16px;max-width:500px;width:90%;text-align:center;box-shadow:0 4px 20px #000;overflow-y:auto;max-height:80vh;}
+    .surprise-content h2{margin-top:0;margin-bottom:12px;}
+    .surprise-list{list-style:none;padding:0;margin:0;}
+    .surprise-list li{margin:8px 0;font-size:16px;line-height:1.4;}
+    .close-btn{margin-top:16px;padding:8px 16px;border:none;border-radius:8px;background:#f472b6;color:#0f172a;font-weight:700;cursor:pointer;}
+    canvas.fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 998;
+    }
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 40px;
+      height: 60px;
+      border-radius: 50% 50% 50% 50%;
+      background-color: red;
+      animation: rise 6s linear forwards;
+    }
+    @keyframes rise {
+      0% {transform: translateY(0);opacity: 1;}
+      100% {transform: translateY(-120vh);opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+  <canvas class="fireworks" id="fireworks"></canvas>
+  <div class="center-page">
+    <div class="countdown" id="countdown"></div>
+    <h1>Happy Birthday 🎂</h1>
+    <div class="highlight-name" id="name">Sayanta</div>
+    <p>Wishing you joy, laughter, and magical moments all day long ✨</p>
+    <div>
+      <button id="celebrateBtn">Tap to Celebrate</button>
+      <button id="surpriseBtn">Open Surprise</button>
+    </div>
+  </div>
+
+  <div class="surprise-popup" id="surprisePopup">
+    <div class="surprise-content">
+      <h2>Birthday Wishes 🎉</h2>
+      <ul class="surprise-list">
+        <li>🎉 Wishing you endless joy on your special day!</li>
+        <li>✨ May this year bring you success in everything you do.</li>
+        <li>🌟 Happy Birthday to someone who makes life brighter.</li>
+        <li>😂 Here’s to another year of laughter and love.</li>
+        <li>💖 May your heart be as light as your dreams are big.</li>
+        <li>😊 Wishing you moments that make you smile all day long.</li>
+        <li>🏆 You deserve the best, and I hope you get it today.</li>
+        <li>🌠 Happy Birthday! Keep shining like the star you are.</li>
+        <li>🕯️ May every candle you blow bring a wish come true.</li>
+        <li>🥂 Cheers to health, happiness, and new adventures.</li>
+        <li>🍫 Hope your birthday is as sweet as you are.</li>
+        <li>🎊 Today is all about celebrating YOU.</li>
+        <li>🤗 Sending hugs, smiles, and good vibes your way.</li>
+        <li>🎁 Wishing you a day filled with beautiful surprises.</li>
+        <li>🌈 May your life be a colorful journey ahead.</li>
+        <li>💎 You’re not older, just wiser and more fabulous.</li>
+        <li>🔥 Happy Birthday to someone truly unforgettable.</li>
+        <li>🌠 Here’s to dreams coming true, starting today.</li>
+        <li>🌸 Have a birthday that’s as wonderful as your soul.</li>
+      </ul>
+      <button class="close-btn" id="closePopup">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const countdownEl = document.getElementById('countdown');
+    const targetDate = new Date('September 4, 2025 00:00:00').getTime();
+
+    setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdownEl.textContent = `Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+      if (distance < 0) {
+        countdownEl.textContent = "Happy Birthday Sayanta!";
+      }
+    }, 1000);
+
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const surprisePopup = document.getElementById('surprisePopup');
+    const closePopup = document.getElementById('closePopup');
+
+    surpriseBtn.addEventListener('click', () => {
+      surprisePopup.classList.add('show');
+    });
+
+    closePopup.addEventListener('click', () => {
+      surprisePopup.classList.remove('show');
+    });
+
+    const celebrateBtn = document.getElementById('celebrateBtn');
+    const fireworksCanvas = document.getElementById('fireworks');
+    const ctx = fireworksCanvas.getContext('2d');
+    fireworksCanvas.width = window.innerWidth;
+    fireworksCanvas.height = window.innerHeight;
+
+    function createFirework(x, y) {
+      const particles = [];
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          speed: Math.random() * 4 + 1,
+          angle: Math.random() * 2 * Math.PI,
+          radius: Math.random() * 3 + 2,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          alpha: 1
+        });
+      }
+      return particles;
+    }
+
+    let fireworks = [];
+    function animateFireworks() {
+      ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+      fireworks.forEach((fw, i) => {
+        fw.forEach(p => {
+          p.x += Math.cos(p.angle) * p.speed;
+          p.y += Math.sin(p.angle) * p.speed;
+          p.alpha -= 0.01;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.fill();
+        });
+        if (fw[0].alpha <= 0) fireworks.splice(i, 1);
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animateFireworks);
+    }
+    animateFireworks();
+
+    function launchBalloons() {
+      for (let i = 0; i < 10; i++) {
+        const balloon = document.createElement('div');
+        balloon.classList.add('balloon');
+        balloon.style.left = Math.random() * window.innerWidth + 'px';
+        balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 50%)`;
+        document.body.appendChild(balloon);
+        setTimeout(() => balloon.remove(), 6000);
+      }
+    }
+
+    celebrateBtn.addEventListener('click', () => {
+      fireworks.push(createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight / 2));
+      launchBalloons();
+    });
+  </script>
+</body>
+</html>
